@@ -15,4 +15,7 @@ public class Pointcuts {
 
     @Pointcut("execution(* com.example.services.CrudService.delete*(..))")
     public void deleteMethods() {}
+
+    @Pointcut("execution(* com.example.services.FileService.*(..))")
+    public void fileService() {}
 }

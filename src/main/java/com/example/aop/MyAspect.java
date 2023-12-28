@@ -6,8 +6,11 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
 @Component
@@ -18,7 +21,7 @@ public class MyAspect {
 
 
     @Around("Pointcuts.allFindMethods()")
-    public Object aroundFindMethods(ProceedingJoinPoint joinPoint) throws ServiceException{
+    public Object aroundFindMethods(ProceedingJoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
 
         if(methodSignature.getName().equals("findAll")) {
@@ -38,27 +41,30 @@ public class MyAspect {
             throw new RuntimeException(e.getMessage());
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-            throw new ServiceException("Error while saving in  crud service", e.getCause());
+            throw new ServiceException("Something went wrong(", e.getCause());
         }
 
         return result;
     }
 
     @Around("Pointcuts.saveMethods()")
-    public Object aroundSaveMethods(ProceedingJoinPoint joinPoint) throws ServiceException{
+    public Object aroundSaveMethods(ProceedingJoinPoint joinPoint) {
         log.info("Try to save entity in crud service");
 
         try {
             log.info("Saving entity...");
             return joinPoint.proceed();
+        }catch (DataIntegrityViolationException e) {
+            log.error(e.getMessage());
+            return new IllegalArgumentException("Wrong owner id");
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-            throw new ServiceException("Error while saving in crud service", e.getCause());
+            throw new ServiceException("Something went wrong(", e.getCause());
         }
     }
 
     @Around("Pointcuts.updateMethods()")
-    public Object aroundUpdateMethods(ProceedingJoinPoint joinPoint) throws ServiceException{
+    public Object aroundUpdateMethods(ProceedingJoinPoint joinPoint) {
         log.info("Try to update entity in crud service");
 
         try {
@@ -66,17 +72,20 @@ public class MyAspect {
             return joinPoint.proceed();
         } catch (IllegalArgumentException e ){
             throw e;
+        }catch (DataIntegrityViolationException e) {
+            log.error(e.getMessage());
+            return new IllegalArgumentException("Wrong owner id");
         }catch (RuntimeException e){
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-            throw new ServiceException("Error while updating in crud service", e.getCause());
+            throw new ServiceException("Something went wrong(", e.getCause());
         }
     }
 
     @Around("Pointcuts.deleteMethods()")
-    public Object aroundDeleteMethods(ProceedingJoinPoint joinPoint) throws ServiceException{
+    public Object aroundDeleteMethods(ProceedingJoinPoint joinPoint) {
         log.info("Try to delete entity in crud service");
         try {
             log.info("Deleting entity");
@@ -86,7 +95,18 @@ public class MyAspect {
             throw new RuntimeException(e.getMessage());
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-            throw new ServiceException("Error while deleting in crud service", e.getCause());
+            throw new ServiceException("Something went wrong(", e.getCause());
+        }
+    }
+
+    @Around("Pointcuts.fileService()")
+    public Object aroundFileServiceMethods(ProceedingJoinPoint joinPoint) {
+        log.info("Operation ander file");
+        try{
+            return joinPoint.proceed();
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
+            throw new ServiceException("Sorry something went wrong", e.getCause());
         }
     }
 }

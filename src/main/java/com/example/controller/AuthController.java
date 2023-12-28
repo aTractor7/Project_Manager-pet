@@ -33,7 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<HttpStatus> registration(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
+    public ResponseEntity<UserDTO> registration(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
         User user = convertToUser(userDTO);
         validation.validate(user, bindingResult);
 
@@ -43,7 +43,7 @@ public class AuthController {
 
         userService.save(user);
 
-        return ResponseEntity.ok(HttpStatus.OK);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @ExceptionHandler

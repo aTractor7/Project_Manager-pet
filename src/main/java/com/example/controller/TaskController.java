@@ -112,7 +112,6 @@ public class TaskController {
 
     private Task convertToTask(TaskDTO taskDTO){
         Task task = modelMapper.map(taskDTO, Task.class);
-        task.setId(0);
         task.setProjectStorage(new Project(taskDTO.getProjectId()));
         return task;
     }

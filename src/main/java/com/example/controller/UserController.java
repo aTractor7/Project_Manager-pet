@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.dto.UserDTO;
 import com.example.entity.User;
+import com.example.entity.UserDetailsImpl;
 import com.example.services.impl.UserService;
 
 
@@ -14,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +40,11 @@ public class UserController {
         this.userService = userService;
         this.userIdCorrespondence = userIdCorrespondence;
         this.validation = validationFactory.createValidationChain();
+    }
+
+    @GetMapping("/registered")
+    public ResponseEntity<UserDTO> registered(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return new ResponseEntity<>(convertToUserDTO(userDetails.user()), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
@@ -86,6 +93,12 @@ public class UserController {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleRuntimeExc(RuntimeException e){
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), System.currentTimeMillis());
+        return  new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleNoSuchExc(NoSuchElementException e){
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), System.currentTimeMillis());
         return  new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

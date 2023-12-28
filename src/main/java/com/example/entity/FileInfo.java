@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "file")
-public class File {
+public class FileInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +24,19 @@ public class File {
     @Column(name = "name")
     private String name;
 
-    @Column(name="path")
-    private String path;
+    private String type;
+
+    @Column(name="dir")
+    private String dir;
 
     @ManyToOne
     @JoinColumn(name = "task_id", referencedColumnName = "id")
     private Task taskStorage;
+
+    public FileInfo(String name, String type, String dir, Task taskStorage) {
+        this.name = name;
+        this.type = type;
+        this.dir = dir;
+        this.taskStorage = taskStorage;
+    }
 }

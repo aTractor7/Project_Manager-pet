@@ -11,6 +11,8 @@ import lombok.Data;
 @Data
 public class ProjectDTO {
 
+    private int id;
+
     @NotBlank
     @Size(min = 5, max = 50, message = "From 5 to 50")
     private  String title;
@@ -23,6 +25,5 @@ public class ProjectDTO {
     private Status status;
 
     @NotNull
-    @Enumerated(EnumType.ORDINAL)
     private Methodology methodology;
 }

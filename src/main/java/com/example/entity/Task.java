@@ -29,7 +29,6 @@ public class Task {
     @Column(name = "title")
     private String title;
 
-    @NotBlank
     @Size(max = 200, min = 10, message = "From 10 to 200 chars")
     @Column(name="description")
     private String description;
@@ -51,7 +50,7 @@ public class Task {
     private Project projectStorage;
 
     @OneToMany(mappedBy = "taskStorage", cascade = CascadeType.REMOVE)
-    private List<File> fileList;
+    private List<FileInfo> fileList;
 
     public Task(int id) {
         this.id = id;

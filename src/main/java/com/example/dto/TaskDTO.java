@@ -12,14 +12,14 @@ import org.springframework.context.annotation.PropertySource;
 import java.time.LocalDateTime;
 
 @Data
-@PropertySource("classpath:application-dev.properties")
 public class TaskDTO {
+
+    private int id;
 
     @NotBlank
     @Size(max = 100, message = "Less then 100")
     private String title;
 
-    @NotBlank
     @Size(max = 200, min = 10, message = "From 10 to 200 chars")
     private String description;
 

@@ -2,6 +2,7 @@ package com.example.util.validation.validator;
 
 import com.example.entity.User;
 import com.example.services.impl.UserService;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
