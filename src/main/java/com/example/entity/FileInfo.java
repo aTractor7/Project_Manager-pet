@@ -24,6 +24,7 @@ public class FileInfo {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "type")
     private String type;
 
     @Column(name="dir")
