@@ -32,7 +32,6 @@ public class AuthController {
         this.validation = validationFactory.createValidationChain();
     }
 
-    @CrossOrigin
     @PostMapping("/registration")
     public ResponseEntity<UserDTO> registration(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
         User user = convertToUser(userDTO);
