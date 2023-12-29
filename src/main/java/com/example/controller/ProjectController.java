@@ -61,6 +61,7 @@ public class ProjectController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @CrossOrigin
     @GetMapping
     public List<ProjectDTO> getAll(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return projectService.findAll(userDetails.user()).stream().map(this::convertToProjectDTO).collect(Collectors.toList());
